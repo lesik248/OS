@@ -37,6 +37,3 @@ bin/
 *.swp
 *.swo
 
-# Ignore unwanted lab builds
-lab1/
-
