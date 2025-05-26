@@ -3,7 +3,6 @@
 
 using namespace std;
 
-// Global variables
 int arraySize = 0;
 int* arr = nullptr;
 CRITICAL_SECTION cs;
@@ -11,7 +10,6 @@ HANDLE* handleThreads;
 HANDLE* handleThreadsAreStarted;
 HANDLE* handleThreadsAreStopped;
 HANDLE* handleThreadsAreExited;
-HANDLE handleMutex;
 #include "marker_utils.h"
 
 void printArray() {
@@ -48,7 +46,6 @@ DWORD WINAPI marker(LPVOID threadIndexPtr) {
 
             DWORD waitResult = WaitForMultipleObjects(2, hPair, FALSE, INFINITE);
             if (waitResult == WAIT_OBJECT_0 + 1) {
-                // 🛠️ Исправлено: добавлены нужные параметры
                 clearMarksOfThread(threadId, arr, arraySize, cs);
                 ExitThread(0);
             } else {
@@ -59,15 +56,12 @@ DWORD WINAPI marker(LPVOID threadIndexPtr) {
     }
 }
 
-
-// --- Main Thread Logic ---
 void initResources(int amountOfThreads) {
     InitializeCriticalSection(&cs);
     handleThreads = new HANDLE[amountOfThreads];
     handleThreadsAreStarted = new HANDLE[amountOfThreads];
     handleThreadsAreStopped = new HANDLE[amountOfThreads];
     handleThreadsAreExited = new HANDLE[amountOfThreads];
-    handleMutex = CreateMutex(NULL, FALSE, NULL);
 }
 
 void createThreads(int amountOfThreads) {
@@ -94,7 +88,6 @@ void cleanup(int amountOfThreads) {
     DeleteCriticalSection(&cs);
 }
 
-// --- Main ---
 int main() {
     int amountOfThreads = 0;
 

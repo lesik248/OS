@@ -1,4 +1,3 @@
-// marker_utils.cpp
 #include "marker_utils.h"
 #include <cstdlib>
 #include <Windows.h>
