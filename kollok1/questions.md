@@ -112,14 +112,74 @@ LPCTSTR lpName // имя события
 );
 ```
 5. **Сравнительный анализ стандарта C++ 98 и любого более свежего стандарта (в контексте лабораторных)**
+- Создание потока:
+   - С++ 98:
+      ```
+      #include <windows.h>
+       HANDLE hThread;
+       DWORD threadId;
+       hThread = CreateThread(
+           nullptr,          // default security attributes
+           0,                // default stack size
+           MyThreadFunction, // thread function
+           nullptr,          // parameter to thread function
+           0,                // default creation flags
+           &threadId         // returns the thread identifier
+       );
+      ```
+   - C++ 11
+     ```
+     #include <thread>
+     std::thread t(myThreadFunc);
+     t.join(); // Ждём завершения потока
+     ```
+- Создание события:
+   - С++ 98:
+      ```
+      WaitForSingleObject(hStartEvent, INFINITE);
+      ```
+   - C++ 11
+     ```
+     #include <condition_variable>
+     std::condition_variable cv;
+     bool eventHappened = false;
+     ```
+- Установка события:
+   - С++ 98:
+      ```
+      SetEvent(hContinueEvent);
+      ```
+   - C++ 11
+     ```
+     eventHappened = true;
+     cv.notify_one()
+     ```
+- Ожидание события:
+   - С++ 98:
+      ```
+      WaitForSingleObject(hStartEvent, INFINITE);
+      ```
+   - C++ 11
+     ```
+     cv.wait(lock, [] { return eventHappened; });
+     ```
+- Работа с общими данными:
+   - С++ 98:
+      ```
+      // Критическая секция
 
-| **Аспект** | **C++98** | **C++11/14/17/20** |
-| --- | --- | --- |
-| **Потоки** | Нет (WinAPI/POSIX) | &lt;thread&gt;, &lt;mutex&gt;, &lt;atomic&gt; |
-| **Умные указатели** | Только std::auto_ptr (устарел) | unique_ptr, shared_ptr, weak_ptr |
-| **STL** | Базовые контейнеры | unordered_map, move-семантика, лямбды |
-| **Функциональность** | Функторы | Лямбды, std::function |
-| **Типы** | Явное указание | auto, decltype |
+      CRITICAL_SECTION cs;
+      
+      InitializeCriticalSection(&cs);
+      
+      EnterCriticalSection(&cs);
+      ```
+   - C++ 11
+     ```
+     #include <mutex>
+     std::mutex mtx;
+     std::lock_guard<std::mutex> lock(mtx);
+     ```
 
 # Общие вопросы
 
@@ -129,10 +189,10 @@ LPCTSTR lpName // имя события
 
 4 основных принципа ООП:
 
-1. Инкапсуляция – сокрытие внутренней реализации объекта (например, private-поля в классе).
-2. Наследование – создание новых классов на основе существующих (class Derived : public Base).
+1. Инкапсуляция – объединение данных и кода, работающего с этими данными, в большинстве случае это сводится к тому, чтобы не давать доступа к важным данным напрямую. Вместо этого мы создаем ограниченный набор методов, с помощью которых можно работать с нашими данными. (например, private-поля в классе, Get и Set методы).
+2. Наследование – создание новых классов на основе существующих с заимствованием всех существующих методов родительского класса и дополнительным функционалом (class Derived : public Base).
 3. Полиморфизм – возможность объектов с одинаковым интерфейсом вести себя по-разному (виртуальные функции, перегрузка операторов).
-4. Абстракция – выделение ключевых характеристик объекта, игнорируя несущественные детали (интерфейсы, абстрактные классы).
+4. Абстракция – выделение ключевых характеристик объекта, игнорируя детали реализации (интерфейсы, абстрактные классы).
    
 2. **Магическое число 7 Миллера? – привести не менее 7 примеров из IT;**
 
