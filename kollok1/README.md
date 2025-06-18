@@ -1,9 +1,9 @@
 [Theory answers in .docx](https://github.com/lesik248/OS/blob/main/kollok1/questions.docx)
 
-[Theory answers in .md](https://github.com/lesik248/OS/blob/main/kollok1/questions.docx)
+[Theory answers in .md](https://github.com/lesik248/OS/blob/main/kollok1/questions.md)
 
 ## Нулевая группа вопросов (дать максимально полный ответ с примерами из проделанных лабораторных работ):
-Не четные варианты:
+Нечетные варианты:
 1.  Приведите Win API, необходимое для решения Лабораторной работы номер 3;
 2.  Что такое поток в ОС Windows;
 3.  Что такое Мьютекс;
